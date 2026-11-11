@@ -1,21 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="nl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dev 02 | Nudging Devblog</title>
+  <meta name="description" content="Dev 02 over de AI-assistent en de nudging-website voor O&P Rijk.">
+  <title>Dev 02 | AI-assistent en nudging</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
+  <header class="header_mid">
+    <div class="container_mid">
       <h1 class="site-title">Dev 02</h1>
-      <p class="site-tagline"><time datetime="2026-10-18">18 Oct 2026</time></p>
+      <p class="site-tagline"><time datetime="2026-10-18">18 oktober 2026</time></p>
     </div>
   </header>
 
-  <nav class="site-nav" aria-label="Main navigation">
-    <div class="container">
+  <nav class="navbar_mid" aria-label="Hoofdnavigatie">
+    <div class="container_mid">
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="devblog.html">Devblog</a></li>
@@ -23,15 +24,400 @@
     </div>
   </nav>
 
-  <main class="container devblog">
-    <article class="post-content">
-      <p>Content for Dev 02 goes here.</p>
-      <p><a href="devblog.html">&larr; Back to devblog</a></p>
+  <div class="container_mid sprint-switch-wrap">
+    <div class="sprint-switch" aria-label="Dev 02 bronnen">
+      <a class="sprint-switch__button is-active" data-view="sprint" href="#deze-sprint">Deze sprint</a>
+      <a class="sprint-switch__button" data-view="society" href="#society-5">Society 5.0</a>
+    </div>
+    <a class="pdf-download" data-view-content="society" href="assets/dev2/Society_5_0_Festivalverslag_Team_Nudging.pdf" download>
+      Download PDF
+    </a>
+  </div>
+
+  <main class="container_mid dev_blog">
+    <article class="blog_text">
+      <p class="post-meta">Devblog &middot; 18 oktober 2026 &middot; AI-prototype</p>
+      <h2>Van antwoorden naar een passende dienst</h2>
+      <p>
+        In Dev 02 hebben we verder gewerkt aan ons idee voor een AI-assistent.
+        Het doel van onze projectgroep was om iemand te helpen bij het vinden van
+        een passende O&amp;P-dienst. De gebruiker beantwoordt korte vragen en krijgt
+        daarna een volgende stap of aanbeveling.
+      </p>
+
+      <section class="blog_block" data-view-content="sprint" id="deze-sprint">
+        <p class="block-label">Deel 01 &middot; Onderzoek en keuze</p>
+        <h3>Waarom we voor deze AI-oplossing kozen</h3>
+        <p>
+          Voordat we gingen bouwen, heb ik eerst een verslag gemaakt over verschillende
+          AI-modellen en de mogelijkheden ervan. We hebben gekeken naar modellen die
+          tekst kunnen begrijpen, vervolgvragen kunnen maken en een aanbeveling kunnen
+          uitleggen.
+        </p>
+        <p>
+          We kozen uiteindelijk voor Ollama met het lokale model Qwen3. Dat paste goed
+          bij ons prototype, omdat we de antwoorden lokaal konden verwerken. Daardoor
+          hoefden we geen echte persoonsgegevens naar een externe AI-dienst te sturen.
+          Ook konden we het model op onze eigen computer testen en de werking beter
+          begrijpen.
+        </p>
+        <h4>Waar we op hebben gelet</h4>
+        <ul>
+          <li>Kan het model gewone antwoorden en korte zinnen begrijpen?</li>
+          <li>Kan het model een goede vervolgvraag stellen?</li>
+          <li>Kan het model een dienst voorstellen zonder de keuze over te nemen?</li>
+          <li>Kunnen we uitleggen waarom een bepaalde aanbeveling wordt gegeven?</li>
+          <li>Kunnen we een fallback gebruiken wanneer de AI niet beschikbaar is?</li>
+        </ul>
+        <p>
+          Deze keuze was dus niet alleen gebaseerd op wat het beste antwoord gaf.
+          Privacy, controleerbaarheid en de mogelijkheid om het prototype lokaal te
+          draaien waren ook belangrijk.
+        </p>
+      </section>
+
+      <section class="blog_block" data-view-content="sprint">
+        <p class="block-label">Deel 02 &middot; Code en bronnen</p>
+        <h3>Van een eerdere Ollama-opdracht naar deze applicatie</h3>
+        <p>
+          We hadden eerder al een opdracht gedaan waarbij we een AI met Ollama
+          gebruikten. Daardoor wisten we al hoe we Ollama konden starten, hoe een
+          lokaal model reageert en hoe we een verzoek naar de API sturen. Die kennis
+          hebben we meegenomen naar dit project.
+        </p>
+        <p>
+          De basiscode komt uit onze eigen Ai_Branch. In de map staat de Python-server,
+          de frontend met JavaScript, de AI-provider en de tests. Ik heb de code gelezen
+          en aangepast voor de vragen over O&amp;P-diensten. De browser stuurt de
+          antwoorden naar de lokale server, waarna de server Ollama aanroept.
+        </p>
+        <p>
+          We hebben ook gekeken naar voorbeelden uit de Ollama-documentatie en naar
+          onze eerdere opdracht. Daarna hebben we de code uitgebreid met vaste
+          antwoordvelden, vervolgvragen, controle op ongeldige antwoorden en een
+          fallback als de AI niet bereikbaar is.
+        </p>
+        <div class="code-snippets">
+          <figure class="code-card">
+            <figcaption>De website stuurt antwoorden naar de server</figcaption>
+            <pre><code>const response = await fetch("/api/nudge", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ answers, recommendation })
+});</code></pre>
+          </figure>
+          <figure class="code-card">
+            <figcaption>De lokale modelkeuze in Python</figcaption>
+            <pre><code>MODEL_NAME = os.getenv(
+    "OLLAMA_MODEL",
+    "qwen3:4b"
+)</code></pre>
+          </figure>
+          <figure class="code-card">
+            <figcaption>Een eenvoudige prompt voor de AI</figcaption>
+            <pre><code>{"role": "system",
+ "content": "Geef een korte,
+ vriendelijke nudge in JSON.
+ Leg ook de reden uit."}</code></pre>
+          </figure>
+          <figure class="code-card">
+            <figcaption>De AI-uitkomst wordt gecontroleerd</figcaption>
+            <pre><code>if (!result.message ||
+    typeof result.message !== "string") {
+  throw new Error(
+    "Geen bruikbare nudge ontvangen."
+  );
+}</code></pre>
+          </figure>
+          <figure class="code-card">
+            <figcaption>Fallback bij te weinig informatie</figcaption>
+            <pre><code>if (limitedInformation) {
+  nextButton.textContent =
+    "Bekijk nudge (beperkte informatie)";
+}</code></pre>
+          </figure>
+        </div>
+        <a class="pdf-download zip-download" data-view-content="sprint" href="assets/dev2/Ai_Branch.zip" download>
+          Download de prototypecode (ZIP)
+        </a>
+        <a class="pdf-download zip-download" data-view-content="sprint" href="assets/dev2/Ai_Branch-verslag.pdf" download>
+          Download het verslag (PDF)
+        </a>
+        <p>
+          De code en de commitverslagen zijn terug te vinden in de downloadbare ZIP.
+          Voor de modelkeuze en de API heb ik vooral gekeken naar Ollama-documentatie,
+          onze eerdere Ollama-opdracht en de uitleg in het eigen projectdossier.
+        </p>
+      </section>
+
+      <section class="blog_block" data-view-content="sprint">
+        <p class="block-label">Deel 03 &middot; Website en eindresultaat</p>
+        <h3>De website: Nudge naar Dienst</h3>
+        <p>
+          Na het onderzoek en het bouwen van de code hadden we een werkende website.
+          De gebruiker beantwoordt vragen over een werksituatie. Als een antwoord te
+          kort of onduidelijk is, stelt de AI een vervolgvraag. Daarna krijgt de
+          gebruiker een mogelijke O&amp;P-dienst of volgende stap te zien.
+        </p>
+        <p>
+          De gebruiker houdt zelf de keuze. De website laat ook zien welke stappen de
+          applicatie uitvoert. Daardoor is de AI minder een zwarte doos en kunnen we
+          controleren hoe de aanbeveling tot stand kwam.
+        </p>
+        <div class="content-with-image">
+          <div>
+            <h4>Wat de website kan</h4>
+            <ul>
+              <li>vragen stap voor stap tonen;</li>
+              <li>antwoorden tijdelijk bewaren;</li>
+              <li>een vervolgvraag maken bij weinig informatie;</li>
+              <li>een passende dienst voorstellen;</li>
+              <li>de reden en gebruikte stappen tonen;</li>
+              <li>een algemene fallback tonen als de AI niet werkt.</li>
+            </ul>
+          </div>
+          <figure class="inline-image">
+            <button class="image-trigger" type="button" data-image="assets/dev2/eind_forum.jpeg" data-alt="Eindscherm van de Nudge naar Dienst-demo">
+              <img src="assets/dev2/eind_forum.jpeg" alt="Eindscherm van de Nudge naar Dienst-demo">
+            </button>
+            <figcaption>Het eindscherm met de aanbeveling.</figcaption>
+          </figure>
+        </div>
+        <div class="content-with-image content-with-image--reverse">
+          <div>
+            <p>Bij een onduidelijk antwoord probeert de AI eerst meer context te krijgen.</p>
+          </div>
+          <figure class="inline-image">
+            <button class="image-trigger" type="button" data-image="assets/dev2/Ai_praten_1.jpeg" data-alt="AI-assistent die een vervolgvraag voorbereidt">
+              <img src="assets/dev2/Ai_praten_1.jpeg" alt="AI-assistent die een vervolgvraag voorbereidt">
+            </button>
+            <figcaption>De AI maakt een vervolgvraag.</figcaption>
+          </figure>
+        </div>
+        <div class="content-with-image">
+          <div>
+            <p>Het logboek maakt zichtbaar welke stappen de applicatie uitvoert.</p>
+          </div>
+          <figure class="inline-image">
+            <button class="image-trigger" type="button" data-image="assets/dev2/Ai_praten_2.jpeg" data-alt="Denkstappen van de AI-assistent in de demo">
+              <img src="assets/dev2/Ai_praten_2.jpeg" alt="Denkstappen van de AI-assistent in de demo">
+            </button>
+            <figcaption>De zichtbare denkstappen.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="blog_block society-report" data-view-content="society" id="society-5">
+        <p class="block-label">Deel 04 &middot; Society 5.0</p>
+        <h3>Van hulp naar invloed</h3>
+        <p class="report-meta">O&amp;P Rijk &middot; Team Nudging &middot; 4 november 2026</p>
+        <p>
+          Tijdens Society 5.0 testten we of een vriendelijke digitale assistent
+          mensen kan helpen om O&amp;P-diensten te ontdekken, terwijl dezelfde
+          aanbevelingen ook hun keuzes kunnen sturen. De test maakte de overgang
+          zichtbaar van een behulpzame voorkant naar een beÃ¯nvloedende achterkant.
+        </p>
+
+        <div class="report-stats" aria-label="Resultaten van de veldtest">
+          <div><strong>16</strong><span>gedocumenteerde rondes</span></div>
+          <div><strong>14</strong><span>live rondes</span></div>
+          <div><strong>2</strong><span>oefenrondes</span></div>
+          <div><strong>10</strong><span>enquÃªteantwoorden</span></div>
+          <div><strong>3,7/5</strong><span>ervaren beÃ¯nvloeding</span></div>
+        </div>
+
+        <div class="report-data">
+          <div>
+            <h4>Overzicht van de tests</h4>
+            <table>
+              <caption>Alle gedocumenteerde testmomenten</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Onderdeel</th>
+                  <th scope="col">Aantal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Live rondes</td><td>14</td></tr>
+                <tr><td>Oefenrondes</td><td>2</td></tr>
+                <tr><td>Alle rondes</td><td>16</td></tr>
+                <tr><td>EnquÃªteantwoorden</td><td>10</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <h4>Reacties uit de enquÃªte</h4>
+            <div class="report-chart" role="img" aria-label="Zeven van de tien respondenten noemden het concept dark en zeven van de tien werden aan het denken gezet over technologische beÃ¯nvloeding">
+              <div class="chart-row">
+                <span>Concept als dark ervaren</span>
+                <div class="chart-track"><span style="width: 70%"></span></div>
+                <strong>7/10</strong>
+              </div>
+              <div class="chart-row">
+                <span>Nagedacht over beÃ¯nvloeding</span>
+                <div class="chart-track"><span style="width: 70%"></span></div>
+                <strong>7/10</strong>
+              </div>
+              <div class="chart-row">
+                <span>Gemiddelde beÃ¯nvloeding</span>
+                <div class="chart-track"><span style="width: 74%"></span></div>
+                <strong>3,7/5</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h4>Onderzoeksvraag</h4>
+        <p>
+          In hoeverre helpt de overgang van een vriendelijke AI-assistent naar een
+          zichtbare, profilerende en beÃ¯nvloedende achterkant bezoekers om de grens
+          tussen behulpzaamheid en manipulatie te herkennen?
+        </p>
+
+        <h4>Vooraf: plan en verwachtingen</h4>
+        <p>
+          Voor het festival maakten we een plan voor korte tests met vrijwillige
+          bezoekers. Een bezoeker stelde een werkgerelateerde vraag aan de assistent,
+          kreeg een suggestie en zag daarna de verborgen laag achter die suggestie.
+          We wilden vooral onderzoeken of bezoekers de interactie begrepen en wanneer
+          hun beeld van behulpzaamheid veranderde.
+        </p>
+        <ul>
+          <li>De test duurde ongeveer vijf tot tien minuten per bezoeker.</li>
+          <li>We vroegen bezoekers om hardop te denken en gaven zo min mogelijk hints.</li>
+          <li>We letten op twijfel, humor, herkenning van profilering en reacties op de onthulling.</li>
+          <li>De geplande observaties waren anoniem; er werden geen namen of werkgegevens verzameld.</li>
+        </ul>
+
+        <h4>Het prototype: twee kanten van Ã©Ã©n gesprek</h4>
+        <p>
+          De voorkant was vriendelijk en laagdrempelig, met een vrolijke mascotte en
+          een gesproken assistent. De achterkant was donkerder en liet een brein in
+          een pot zien. Door de installatie om te draaien, werd letterlijk zichtbaar
+          dat hetzelfde systeem vanuit een ander perspectief anders kan aanvoelen.
+        </p>
+        <div class="report-columns">
+          <div>
+            <h5>Vriendelijke kant</h5>
+            <ul>
+              <li>Een zachte vorm en vrolijke uitstraling.</li>
+              <li>Toegankelijke taal en een sociale stem.</li>
+              <li>Persoonlijke tips die relevant lijken.</li>
+            </ul>
+          </div>
+          <div>
+            <h5>Donkere kant</h5>
+            <ul>
+              <li>Een zichtbaar maar moeilijk te begrijpen brein.</li>
+              <li>Een onheilspellende uitstraling.</li>
+              <li>De onthulling van mogelijke verborgen doelen.</li>
+            </ul>
+          </div>
+        </div>
+
+        <h4>Tijdens de demonstratie</h4>
+        <ol>
+          <li>De bezoeker stelde een herkenbare vraag over werk of HR.</li>
+          <li>De assistent stelde een O&amp;P-route of aanvullende dienst voor.</li>
+          <li>De installatie draaide om en liet de beÃ¯nvloedende achterkant zien.</li>
+          <li>De assistent maakte zichtbaar welke woorden of keuzes gebruikt konden worden voor de aanbeveling.</li>
+        </ol>
+
+        <h4>Resultaten en belangrijkste inzicht</h4>
+        <p>
+          De demonstraties lieten zien dat kleine gesprekskeuzes een route aantrekkelijk
+          kunnen maken zonder dat de assistent een keuze direct afdwingt. De reacties
+          waren niet allemaal hetzelfde. Zeven van de tien respondenten noemden het
+          concept â€œdarkâ€ en zeven respondenten zeiden dat de demo hen liet nadenken
+          over technologische beÃ¯nvloeding. De ervaring kan dus positief lijken,
+          terwijl de onderliggende sturing niet meteen wordt herkend.
+        </p>
+
+        <h4>Beperkingen van de test</h4>
+        <p>
+          De voice-ervaring was gesimuleerd. Er was geen live koppeling met P-Direkt,
+          geen gebruik van echte persoonsgegevens en geen verbinding met een echte
+          overheidsomgeving. De profilering in de onthulling was daarom een
+          demonstratie van een mogelijk mechanisme en geen gevalideerde
+          gedragsanalyse. De resultaten geven vooral inzicht in de ervaring en het
+          gesprek rondom beÃ¯nvloeding.
+        </p>
+
+        <h4>Volledig Society 5.0-verslag</h4>
+        <p>
+          Hieronder staat het volledige verslag pagina voor pagina. De oorspronkelijke
+          tabellen, grafieken, foto's, bijlagen en vormgeving zijn als afbeeldingen
+          opgenomen, zodat de inhoud niet wordt ingekort of samengevat.
+        </p>
+        <div class="society-pages">
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-01.png" data-alt="Society 5.0 verslag pagina 1"><img src="assets/dev2/society-pages/pagina-01.png" alt="Society 5.0 verslag pagina 1"></button><figcaption>Pagina 1 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-02.png" data-alt="Society 5.0 verslag pagina 2"><img src="assets/dev2/society-pages/pagina-02.png" alt="Society 5.0 verslag pagina 2"></button><figcaption>Pagina 2 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-03.png" data-alt="Society 5.0 verslag pagina 3"><img src="assets/dev2/society-pages/pagina-03.png" alt="Society 5.0 verslag pagina 3"></button><figcaption>Pagina 3 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-04.png" data-alt="Society 5.0 verslag pagina 4"><img src="assets/dev2/society-pages/pagina-04.png" alt="Society 5.0 verslag pagina 4"></button><figcaption>Pagina 4 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-05.png" data-alt="Society 5.0 verslag pagina 5"><img src="assets/dev2/society-pages/pagina-05.png" alt="Society 5.0 verslag pagina 5"></button><figcaption>Pagina 5 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-06.png" data-alt="Society 5.0 verslag pagina 6"><img src="assets/dev2/society-pages/pagina-06.png" alt="Society 5.0 verslag pagina 6"></button><figcaption>Pagina 6 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-07.png" data-alt="Society 5.0 verslag pagina 7"><img src="assets/dev2/society-pages/pagina-07.png" alt="Society 5.0 verslag pagina 7"></button><figcaption>Pagina 7 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-08.png" data-alt="Society 5.0 verslag pagina 8"><img src="assets/dev2/society-pages/pagina-08.png" alt="Society 5.0 verslag pagina 8"></button><figcaption>Pagina 8 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-09.png" data-alt="Society 5.0 verslag pagina 9"><img src="assets/dev2/society-pages/pagina-09.png" alt="Society 5.0 verslag pagina 9"></button><figcaption>Pagina 9 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-10.png" data-alt="Society 5.0 verslag pagina 10"><img src="assets/dev2/society-pages/pagina-10.png" alt="Society 5.0 verslag pagina 10"></button><figcaption>Pagina 10 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-11.png" data-alt="Society 5.0 verslag pagina 11"><img src="assets/dev2/society-pages/pagina-11.png" alt="Society 5.0 verslag pagina 11"></button><figcaption>Pagina 11 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-12.png" data-alt="Society 5.0 verslag pagina 12"><img src="assets/dev2/society-pages/pagina-12.png" alt="Society 5.0 verslag pagina 12"></button><figcaption>Pagina 12 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-13.png" data-alt="Society 5.0 verslag pagina 13"><img src="assets/dev2/society-pages/pagina-13.png" alt="Society 5.0 verslag pagina 13"></button><figcaption>Pagina 13 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-14.png" data-alt="Society 5.0 verslag pagina 14"><img src="assets/dev2/society-pages/pagina-14.png" alt="Society 5.0 verslag pagina 14"></button><figcaption>Pagina 14 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-15.png" data-alt="Society 5.0 verslag pagina 15"><img src="assets/dev2/society-pages/pagina-15.png" alt="Society 5.0 verslag pagina 15"></button><figcaption>Pagina 15 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-16.png" data-alt="Society 5.0 verslag pagina 16"><img src="assets/dev2/society-pages/pagina-16.png" alt="Society 5.0 verslag pagina 16"></button><figcaption>Pagina 16 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-17.png" data-alt="Society 5.0 verslag pagina 17"><img src="assets/dev2/society-pages/pagina-17.png" alt="Society 5.0 verslag pagina 17"></button><figcaption>Pagina 17 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-18.png" data-alt="Society 5.0 verslag pagina 18"><img src="assets/dev2/society-pages/pagina-18.png" alt="Society 5.0 verslag pagina 18"></button><figcaption>Pagina 18 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-19.png" data-alt="Society 5.0 verslag pagina 19"><img src="assets/dev2/society-pages/pagina-19.png" alt="Society 5.0 verslag pagina 19"></button><figcaption>Pagina 19 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-20.png" data-alt="Society 5.0 verslag pagina 20"><img src="assets/dev2/society-pages/pagina-20.png" alt="Society 5.0 verslag pagina 20"></button><figcaption>Pagina 20 van 21</figcaption></figure>
+          <figure class="gallery_img"><button class="image-trigger" type="button" data-image="assets/dev2/society-pages/pagina-21.png" data-alt="Society 5.0 verslag pagina 21"><img src="assets/dev2/society-pages/pagina-21.png" alt="Society 5.0 verslag pagina 21"></button><figcaption>Pagina 21 van 21</figcaption></figure>
+        </div>
+      </section>
+
+      <section class="blog_block learning-block" data-view-content="sprint">
+        <p class="block-label">Reflectie</p>
+        <h3>Wat we leerden</h3>
+        <ul>
+          <li>Een AI moet kunnen aangeven wanneer informatie ontbreekt.</li>
+          <li>Doorvragen kan een betere aanbeveling opleveren dan direct een keuze maken.</li>
+          <li>Uitleg over de stappen maakt een AI minder ondoorzichtig.</li>
+          <li>Een aanbeveling moet als hulp worden aangeboden en niet als verplichting.</li>
+          <li>De gebruiker moet altijd zelf kunnen beslissen of de aanbeveling past.</li>
+        </ul>
+      </section>
+
+      <section class="blog_block" data-view-content="sprint">
+        <p class="block-label">Galerij</p>
+        <h3>Alle Dev 02-beelden</h3>
+        <p class="gallery-intro">Klik op een afbeelding om deze groter te openen. Klik daarna nogmaals om verder in te zoomen.</p>
+        <div class="image-gallery">
+          <figure class="gallery_img">
+            <button class="image-trigger" type="button" data-image="assets/dev2/eind_forum.jpeg" data-alt="Eindscherm van de Nudge naar Dienst-demo">
+              <img src="assets/dev2/eind_forum.jpeg" alt="Eindscherm van de Nudge naar Dienst-demo">
+            </button>
+            <figcaption>Eindscherm van de demo.</figcaption>
+          </figure>
+          <figure class="gallery_img">
+            <button class="image-trigger" type="button" data-image="assets/dev2/Ai_praten_1.jpeg" data-alt="AI-assistent die een vervolgvraag voorbereidt">
+              <img src="assets/dev2/Ai_praten_1.jpeg" alt="AI-assistent die een vervolgvraag voorbereidt">
+            </button>
+            <figcaption>De AI stelt een vervolgvraag.</figcaption>
+          </figure>
+          <figure class="gallery_img">
+            <button class="image-trigger" type="button" data-image="assets/dev2/Ai_praten_2.jpeg" data-alt="Denkstappen van de AI-assistent in de demo">
+              <img src="assets/dev2/Ai_praten_2.jpeg" alt="Denkstappen van de AI-assistent in de demo">
+            </button>
+            <figcaption>De zichtbare denkstappen.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <p><a href="devblog.html">&larr; Terug naar de devblog</a></p>
     </article>
   </main>
 
-  <footer class="site-footer">
-    <div class="container">
+  <footer class="footer_mid">
+    <div class="container_mid">
       <p>&copy; 2026 Stephano van Beek</p>
     </div>
   </footer>
@@ -39,3 +425,6 @@
   <script src="js/script.js"></script>
 </body>
 </html>
+
+
+

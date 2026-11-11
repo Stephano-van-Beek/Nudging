@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Een nudgebot die je naar passende ondersteuning begeleidt."
+    />
+    <title>Nudge naar Dienst</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="conversation" aria-labelledby="page-title">
+        <p class="eyebrow">Jouw volgende stap</p>
+        <h1 id="page-title">Nudge naar Dienst</h1>
+        <p class="intro">
+          Beantwoord zes korte vragen. Als iets onduidelijk is, kan Qwen3 maximaal twee
+          vervolgvragen stellen. Daarna krijg je een passende volgende stap.
+        </p>
+        <p class="hint">
+          Dit prototype is een gesimuleerde demo voor O&amp;P Rijk. Je antwoorden gaan naar een
+          lokaal Ollama-model op deze computer en worden niet opgeslagen.
+        </p>
+
+        <div class="progress" aria-label="Voortgang">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <p class="progress-text" id="progress-text" aria-live="polite"></p>
+
+        <form id="nudge-form" novalidate>
+          <fieldset id="question-container"></fieldset>
+          <p class="error" id="error-message" role="alert"></p>
+          <p class="quality-warning" id="quality-warning" role="status" hidden>
+            Ik heb nog onvoldoende bruikbare informatie. Je kunt teruggaan om antwoorden aan te passen,
+            of doorgaan met een algemenere en mogelijk minder zekere aanbeveling.
+          </p>
+          <button
+            class="secondary-button"
+            id="fallback-button"
+            type="button"
+            hidden
+          >
+            Toon standaardnudge zonder AI
+          </button>
+          <div class="actions">
+            <button class="secondary-button" id="back-button" type="button">Vorige</button>
+            <button class="primary-button" id="next-button" type="submit">Verder</button>
+          </div>
+        </form>
+
+        <section class="result" id="result" hidden aria-live="polite">
+          <p class="eyebrow">Jouw nudge</p>
+          <h2 id="service-name"></h2>
+          <p id="nudge-message"></p>
+          <form id="choice-form">
+            <fieldset id="options-container"></fieldset>
+            <button class="primary-button" type="submit">Bevestig mijn keuze</button>
+          </form>
+          <p class="hint" id="result-source"></p>
+        </section>
+
+        <section class="result" id="report" hidden>
+          <p class="eyebrow">Eindformulier: dit was een experiment</p>
+          <h2>Zo ben je genudged</h2>
+          <p>
+            Dit was een gesimuleerde demo. Hieronder staat wat je invulde, wat de AI dacht en
+            welke nudgetechnieken zijn gebruikt.
+          </p>
+          <h3>Jouw antwoorden</h3>
+          <dl id="report-answers"></dl>
+          <h3>Wat de AI dacht</h3>
+          <p id="report-reason"></p>
+          <p id="report-message"></p>
+          <h3>Gebruikte AI-modellen en hun bijdrage</h3>
+          <ul id="report-ai-steps"></ul>
+          <h3>Let op de zekerheid van de aanbeveling</h3>
+          <p id="report-quality"></p>
+          <h3>Gebruikte nudgetechnieken</h3>
+          <ul id="report-techniques"></ul>
+          <h3>Jouw keuze</h3>
+          <p id="report-choice"></p>
+          <p class="hint" id="report-source"></p>
+          <button class="primary-button" id="restart-button" type="button">
+            Opnieuw beginnen
+          </button>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+    <div class="face-widget">
+      <aside id="trace-panel" class="trace-panel" hidden aria-label="Denkstappen van de AI">
+        <h2>Denkstappen</h2>
+        <p class="hint">
+          Logboek van wat de demo en Qwen3 doen, stap voor stap. Het zijn de echte stappen van
+          de app, geen verborgen redeneertekst van het model.
+        </p>
+        <ol id="trace-list"></ol>
+      </aside>
+      <button
+        id="face-button"
+        class="face-button"
+        type="button"
+        aria-expanded="false"
+        aria-controls="trace-panel"
+        aria-label="Gezicht van de AI: klik om de denkstappen te zien"
+      >
+        <svg viewBox="0 0 100 100" width="72" height="72" aria-hidden="true">
+          <circle cx="50" cy="50" r="46" class="face-skin" />
+          <circle cx="34" cy="46" r="5" class="face-ink" />
+          <circle cx="66" cy="46" r="5" class="face-ink" />
+          <path id="face-brows" class="face-line" d="" />
+          <path id="face-mouth" class="face-line" d="" />
+        </svg>
+        <span id="face-label" class="face-label"></span>
+      </button>
+    </div>
+  </body>
+</html>
